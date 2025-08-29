@@ -24,7 +24,7 @@ class AdminController extends Controller
             'password' => $request->password
         ];
         if (Auth::guard('admin')->attempt($data)) {
-            return redirect()->intended('admin.dashboard');
+            return redirect()->intended(route('admin.dashboard'))->with('success', 'Login successful');
         }else{
             return back()->with('error', 'Invalid credentials. Please try again');
 
@@ -33,5 +33,16 @@ class AdminController extends Controller
     public function showdashboard()
     {
         return view('admin.dashboard');
+    }
+    public function logout(Request $request)
+    {
+        Auth::guard('admin')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->route('admin.login')->with('success', 'Logged out successfully');
+    }
+    public function show_forgot_password()
+    {
+        return view('admin.forgot_password');
     }
 }

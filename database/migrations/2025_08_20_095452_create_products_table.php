@@ -18,7 +18,7 @@ return new class extends Migration
         $table->text('description')->nullable();
         $table->decimal('price', 10, 2);
         
-        // cleaner way
+        $table->foreignId('seller_id')->constrained('users')->onDelete('cascade');
         $table->foreignId('category_id')->constrained()->onDelete('cascade');
         
         $table->integer('quantity')->default(0);

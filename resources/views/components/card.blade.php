@@ -1,16 +1,17 @@
- <div class="card">
-                <div class="card-header">
-                    {{ $header }}
-                    
-                </div>
-                <div class="card-body">
+<div class="card">
+    @isset($header)
+        <div class="card-header">
+            {{ $header }}
+        </div>
+    @endisset
 
-                   
-                    {{ $slot }}
-                </div>
-                <div class="card-footer">
-                    
-                        {{ $footer }}
+    <div class="card-body">
+        {{ $slot }}
+    </div>
 
-                </div>
-            </div>
+    @isset($footer)
+        <div class="card-footer">
+            {{ $footer }}
+        </div>
+    @endisset
+</div>

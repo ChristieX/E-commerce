@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Category;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Models\ProductImage;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -44,7 +47,13 @@ class ProductController extends Controller
             'quantity' => 'required|numeric',
             'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        $imagePath = null;
+        if ($request->hasFile('default_image')) {
+            $imagePath= $request->file('default_image')->store('products', 'public');
+        }
 
         $product = new Product();
         $product->name = $request->name;
@@ -53,7 +62,26 @@ class ProductController extends Controller
         $product->description = $request->description;
         $product->quantity = $request->quantity;
         $product->slug = str::slug($request->name);
+        $product->seller_id = Auth::id();
         $product->save();
+
+        $image = new ProductImage();
+        $image->image_path = $imagePath;
+        $image->product_id = $product->id;
+        $image->is_default = true;
+        $image->save();
+
+        if ($request->hasFile('additional_images')) {
+            foreach ($request->file('additional_images') as $image) {
+                $imagePath = $image->store('products', 'public');
+                ProductImage::create([
+                    'product_id' => $product->id,
+                    'image_path' => $imagePath,
+                    'is_default' => false,
+                ]);
+            }
+        }
+        
 
         return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
@@ -89,6 +117,7 @@ class ProductController extends Controller
             'quantity' => 'required|numeric',
             'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string',
+            'additional_images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $product->name = $request->name;
@@ -99,6 +128,16 @@ class ProductController extends Controller
         $product->slug = str::slug($request->name);
         $product->save();
 
+         if ($request->hasFile('additional_images')) {
+            $imagePath= $request->file('additional_images')->store('products', 'public');
+        }
+         $image = new ProductImage();
+        $image->image_path = $imagePath;
+        $image->product_id = $product->id;
+        $image->is_default = true;
+        $image->save();
+
+
         return redirect()->route('products.index')->with('success', 'Product updated successfully.');
     }
 
@@ -108,7 +147,14 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         //
+        if($product->images){
+            foreach($product->images as $image){
+                Storage::disk('public')->delete($image->image_path);
+                $image->delete();
+            }
+        }
         $product->delete();
+
         return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
     }
 }

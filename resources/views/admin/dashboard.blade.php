@@ -1,3 +1,7 @@
+@extends('layouts.admin')
+@section('title', 'Admin Dashboard')
+@section('content')
 <div>
-    <!-- Walk as if you are kissing the Earth with your feet. - Thich Nhat Hanh -->
+   <h1>hi</h1>
 </div>
+@endsection

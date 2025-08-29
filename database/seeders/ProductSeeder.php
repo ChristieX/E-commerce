@@ -40,6 +40,7 @@ class ProductSeeder extends Seeder
                     'price' => rand(10, 100) * 10, 
                     'category_id' => $category->id,
                     'quantity' => rand(1, 100), 
+                    'seller_id' => User::where('role', 'seller')->inRandomOrder()->first()->id,
                 ]);
             }
         }

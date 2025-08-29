@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('content')
-    <form action="{{ route('products.store') }}" method="POST">
+<div class="container">
+    <form action="{{ route('products.store') }}" method="POST"  enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
             <label for="name" class="form-label">Product Name</label>
@@ -23,11 +24,28 @@
             <select class="form-select" id="category_id" name="category_id" required>
                 <option value="">Select Category</option>
                 @foreach($categories as $category)
-                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                <option value="{{ $category->id }}">{{ $category->name }}</option>
                 @endforeach
             </select>
         </div>
+        <!-- Default Image -->
+                <div class="mb-3">
+                    <label for="default_image" class="form-label">Default Product Image</label>
+                    <input type="file" class="form-control" id="default_image" name="default_image"
+                     >
+                    <span class="text-danger fw-bold">@error('default_image'){{$message}}@enderror</span>
+                </div>
+                
+                <!-- Additional Images -->
+                <div class="mb-3">
+                    <label for="additional_images" class="form-label">Additional Product Images</label>
+                    <input type="file" class="form-control" id="additional_images" name="additional_images[]"
+                    multiple>
+                    <small class="form-text text-muted">Optional: You can upload multiple extra images.</small>
+                    <span class="text-danger fw-bold">@error('additional_images'){{$message}}@enderror</span>
+                </div>
         <button type="submit" class="btn btn-primary">Create Product</button>
     </form>
+</div>
 
 @endsection

@@ -35,7 +35,7 @@
                         </div>
 
                         <span class="mb-3 d-block">
-                            <a href="">Forgot Password?</a>
+                            <a href="{{ route('admin.forgot_password') }}">Forgot Password?</a>
                         </span>
                         <x-alert type="error" message="{{ session('error') }}" />
                         <div class="d-grid">
