@@ -16,8 +16,7 @@
                     <th scope="col">Price</th>
                     <th scope="col">Quantity</th>
                     <th scope="col">Category</th>
-                    @if (auth()->check() &&
-                            $products->contains(fn($product) => auth()->user()->can('update', $product) || auth()->user()->can('delete', $product)))
+                    @if (auth()->check() && $products->contains(fn($product) => auth()->user()->can('update', $product) || auth()->user()->can('delete', $product)))
                         <th>Actions</th>
                     @endif
 
@@ -67,33 +66,39 @@
 @section('title', 'Products')
 
 @section('content')
-<div class="container mt-4">
-    <div class="row">
-        @foreach ($products as $product)
+    <div class="container mt-4">
+
+        <div class="row">
+            <x-alert type="success" message="{{ session('success') }}"/>
+
+            @foreach ($products as $product)
             <div class="col-md-3 mb-4">
-                <x-card>
-                    {{-- Header with product image --}}
-                    @if ($product->images->where('is_default', true)->first())
-                    <x-slot name="header">
-                            <img src="{{ asset('storage/' . $product->images->where('is_default', true)->first()->image_path) }}"
-                                alt="{{ $product->name }}" 
-                                class="img-fluid rounded" 
-                                style="height: 180px; object-fit: cover; width: 100%;">
-                            </x-slot>
+                        <a href="{{ route('products.show', $product->id) }}" class="text-decoration-none text-dark">
+                        <x-card>
+                            {{-- Header with product image --}}
+                             @if ($product->images->where('is_default', true)->first())
+                                <x-slot name="header">
+                                    <img src="{{ asset('storage/' . $product->images->where('is_default', true)->first()->image_path) }}"
+                                        alt="{{ $product->name }}" class="img-fluid rounded"
+                                        style="height: 180px; object-fit: cover; width: 100%;">
+                                </x-slot>
                             @endif
-                    <h3 class="fw-bold mb-1">{{ $product->name }}</h3>
+                            <h3 class="fw-bold mb-1">{{ $product->name }}</h3>
 
-                    {{-- Body with details --}}
-                    <p class="text-muted small mb-2">{{ $product->description }}</p>
-                    <p class="mb-0"><strong>Price:</strong> ${{ $product->price }}</p>
+                            {{-- Body with details --}}
+                             <p class="text-muted small mb-2">{{ $product->description }}</p>
+                            <p class="mb-0 text-danger"><strong>Price:</strong> ${{ $product->price }}</p>
 
-                    <x-slot name="footer">
-                        <a href="{{ route('products.show', $product->id) }}" class="btn btn-primary w-100">View</a>
-                    </x-slot>
-                </x-card>
-            </div>
-        @endforeach
-    </div>
-</div>
-@endsection
+                            <x-slot name="footer">
 
+                                <a href="{{ route('cart.add', $product->id) }}"
+                                    class="btn btn-warning w-100 d-inline text-center my-2">Add to cart</a>
+                            </x-slot>
+                        </x-card>
+                    </a>
+                    </div>
+            @endforeach
+        </div>
+        <div>{{ $products->links() }}</div>
+    </div> 
+@endsection 

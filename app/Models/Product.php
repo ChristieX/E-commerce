@@ -33,4 +33,10 @@ class Product extends Model
     // {
     //     return 'slug';
     // }
+
+    public function carts()
+{
+    return $this->hasMany(Cart::class);
+}
+
 }

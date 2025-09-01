@@ -10,7 +10,7 @@
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{{ route('category.index') }}">Home</a>
                 </li>
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a class="nav-link" href="#">Link</a>
                 </li>
                 <li class="nav-item dropdown">
@@ -29,7 +29,7 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                </li>
+                </li> --}}
             </ul>
             {{-- <form class="d-flex"> --}}
             {{-- <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
@@ -40,11 +40,16 @@
                 <a href="{{ route('account.register') }}" class="btn btn-outline-primary d-flex">Register</a>
             @endguest
             @auth
+            <a href="{{ route('cart.show') }}" class="btn btn-outline-primary d-flex align-items-center rounded-circle mx-2">
+
+                <i class="fa-solid fa-cart-shopping"></i>
+            </a>
                 <form method="POST" action="{{ route('account.logout') }}" class="d-flex">
                     @csrf
                     <button type="submit" class="btn btn-danger">Logout</button>
                 </form>
             @endauth
+            
         </div>
     </div>
 </nav>

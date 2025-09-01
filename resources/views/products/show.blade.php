@@ -29,6 +29,7 @@
                         @endif
 
                     </x-slot:header>
+                    <x-alert type="success" message="{{ session('success') }}"/>
                     <p><strong>Category:</strong> {{ $product->category->name }}</p>
                     <p><strong>Description:</strong> {{ $product->description }}</p>
                     <p><strong>Price:</strong> ${{ number_format($product->price, 2) }}</p>
